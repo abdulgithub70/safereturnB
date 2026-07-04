@@ -72,6 +72,15 @@ if (process.env.NODE_ENV !== 'test') {
 // Rate limiting
 app.use('/api/', generalLimiter);
 
+// server wakeup call
+app.get('/', (req,res) => {
+  res.status(200).json({
+    message: 'Server is running',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV,
+  });
+});
+
 // Health check
 app.get('/health', (req, res) => {
   res.status(200).json({
