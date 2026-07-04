@@ -65,12 +65,17 @@ const submitClaim = async (req, res, next) => {
       priority: 'high',
     }));
 
-    // Notify finder
+    // Notify finder — include parent contact details
+    const parentContact = [
+      req.user.phone ? `Phone: ${req.user.phone}` : null,
+      `Email: ${req.user.email}`,
+    ].filter(Boolean).join(' | ');
+
     adminNotifications.push({
       recipient: report.reportedBy._id,
       type: 'claim_submitted',
-      title: 'Someone claimed the child',
-      message: `${req.user.name} has submitted a claim for case ${report.caseId}`,
+      title: `New claim on your report — Case ${report.caseId}`,
+      message: `${req.user.name} (${req.body.relationship || 'guardian'}) has claimed the child. Contact: ${parentContact}`,
       relatedReport: reportId,
       relatedClaim: claim._id,
       priority: 'high',
@@ -84,11 +89,14 @@ const submitClaim = async (req, res, next) => {
       logger.error(`Claim email failed: ${e.message}`)
     );
 
-    // Notify finder via email
+    // Notify finder via email — with parent contact details
     const finderEmail = emailTemplates.newClaimNotification(
       report.reportedBy.name,
       report.caseId,
-      req.user.name
+      req.user.name,
+      req.user.phone || null,
+      req.user.email,
+      req.body.relationship || 'guardian'
     );
     sendEmail({ to: report.reportedBy.email, ...finderEmail }).catch(() => {});
 

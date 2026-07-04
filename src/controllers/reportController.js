@@ -97,7 +97,7 @@ const getReports = async (req, res, next) => {
 const getReport = async (req, res, next) => {
   try {
     const report = await ChildReport.findById(req.params.id)
-      .populate('reportedBy', 'name email phone role organization')
+      .populate('reportedBy', 'name email phone role organization isVerified')
       .populate({
         path: 'claims',
         select: 'claimId status createdAt relationship',

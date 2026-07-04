@@ -88,7 +88,7 @@ const emailTemplates = {
     `,
   }),
 
-  newClaimNotification: (finderName, caseId, claimantName) => ({
+  newClaimNotification: (finderName, caseId, claimantName, claimantPhone, claimantEmail, relationship) => ({
     subject: `New Claim on Your Report - Case #${caseId}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -96,9 +96,35 @@ const emailTemplates = {
           <h1 style="color: white; margin: 0;">Missing Child Platform</h1>
         </div>
         <div style="padding: 30px; background: #f9fafb;">
-          <p>Dear ${finderName},</p>
-          <p>A parent/guardian (${claimantName}) has submitted a claim for case <strong>#${caseId}</strong>.</p>
-          <p>Our team is verifying their identity. You will be notified once verification is complete.</p>
+          <p>Dear <strong>${finderName}</strong>,</p>
+          <p>A parent/guardian has submitted a claim for case <strong>#${caseId}</strong>. Here are their details:</p>
+
+          <div style="background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <h3 style="margin: 0 0 12px; color: #1e40af; font-size: 16px;">Claimant Details</h3>
+            <table style="width: 100%; font-size: 14px; border-collapse: collapse;">
+              <tr><td style="padding: 6px 0; color: #6b7280; width: 130px;">Name</td><td style="padding: 6px 0; font-weight: bold;">${claimantName}</td></tr>
+              <tr><td style="padding: 6px 0; color: #6b7280;">Relationship</td><td style="padding: 6px 0; text-transform: capitalize;">${relationship}</td></tr>
+              ${claimantPhone ? `<tr><td style="padding: 6px 0; color: #6b7280;">Phone</td><td style="padding: 6px 0;"><a href="tel:${claimantPhone}" style="color: #1e40af; font-weight: bold; font-size: 16px;">${claimantPhone}</a></td></tr>` : ''}
+              <tr><td style="padding: 6px 0; color: #6b7280;">Email</td><td style="padding: 6px 0;"><a href="mailto:${claimantEmail}" style="color: #1e40af;">${claimantEmail}</a></td></tr>
+            </table>
+          </div>
+
+          ${claimantPhone ? `
+          <div style="text-align: center; margin: 20px 0;">
+            <a href="tel:${claimantPhone}" style="display: inline-block; background: #16a34a; color: white; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px;">
+              📞 Call ${claimantName} Now
+            </a>
+          </div>` : ''}
+
+          <div style="background: #fef3c7; padding: 12px 16px; border-radius: 8px; border-left: 4px solid #f59e0b; margin-top: 16px;">
+            <p style="margin: 0; color: #92400e; font-size: 13px;">
+              <strong>Note:</strong> Our verification team is also reviewing this claim. 
+              You may contact the claimant directly, but please also wait for official verification before any handoff.
+            </p>
+          </div>
+        </div>
+        <div style="padding: 20px; background: #f3f4f6; text-align: center; font-size: 12px; color: #6b7280;">
+          <p>SafeReturn — Reuniting families, one child at a time.</p>
         </div>
       </div>
     `,
